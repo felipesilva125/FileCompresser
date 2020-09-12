@@ -5,13 +5,13 @@ namespace FileCompresser
     public static class FileController
     {
         private const string FILE_PATH = @"C:\Temp";
-        private const string READING_EXTENSION = "txt";
-        private const string COMPRESSING_EXTENSION = "cod";
-        private const string DECOMPRESSING_EXTENSION = "dec";
+        public const string READING_EXTENSION = "txt";
+        public const string COMPRESSING_EXTENSION = "cod";
+        public const string DECOMPRESSING_EXTENSION = "dec";
 
-        public static string ReadFileContent(string fileName)
+        public static string ReadFileContent(string fileName, string fileExtension)
         {            
-            var path = getFullPath(fileName, READING_EXTENSION);
+            var path = getFullPath(fileName, fileExtension);
 
             if (!File.Exists(path))
                 throw new FileNotFoundException($"File {fileName} not found!");
@@ -19,13 +19,9 @@ namespace FileCompresser
             return File.ReadAllText(path);
         }
 
-        public static void WriteFileContent(string fileName, string fileContent)
+        public static void WriteFileContent(string fileName, string fileExtension, string fileContent)
         {
-            var path = getFullPath(fileName, COMPRESSING_EXTENSION);
-
-            if (File.Exists(path))
-                throw new FileNotFoundException($"File {fileName} already exists!");
-
+            var path = getFullPath(fileName, fileExtension);            
             File.WriteAllText(path, fileContent);
         }
 
