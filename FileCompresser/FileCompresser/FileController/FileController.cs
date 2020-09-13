@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace FileCompresser
 {
@@ -10,12 +11,9 @@ namespace FileCompresser
         public const string DECOMPRESSING_EXTENSION = "dec";
 
         public static string ReadFileContent(string fileName, string fileExtension)
-        {            
-            var path = getFullPath(fileName, fileExtension);
-
-            if (!File.Exists(path))
-                throw new FileNotFoundException($"File {fileName} not found!");
-
+        {
+            ValidateFile(fileName, fileExtension);
+            var path = getFullPath(fileName, fileExtension);            
             return File.ReadAllText(path);
         }
 
@@ -31,6 +29,14 @@ namespace FileCompresser
             var path = Path.Combine(FILE_PATH, fileName);
 
             return path;
+        }
+
+        internal static void ValidateFile(string fileName, string fileExtension)
+        {
+            var path = getFullPath(fileName, fileExtension);
+
+            if (!File.Exists(path))
+                throw new FileNotFoundException($"File {fileName} not found!");
         }
     }        
 }
