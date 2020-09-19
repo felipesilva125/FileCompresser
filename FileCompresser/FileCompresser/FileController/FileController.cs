@@ -5,7 +5,7 @@ namespace FileCompresser
 {
     public static class FileController
     {
-        private const string FILE_PATH = @"C:\Temp";
+        public const string FILE_PATH = @"C:\Temp";
         public const string READING_EXTENSION = "txt";
         public const string COMPRESSING_EXTENSION = "cod";
         public const string DECOMPRESSING_EXTENSION = "dec";

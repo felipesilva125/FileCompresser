@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace FileCompresser
@@ -10,18 +11,14 @@ namespace FileCompresser
     {
         public void Encode(string content)
         {
-            //var bytes = new List<byte>();
+            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
 
-            //bytes.Add(1); //indicator of the encoding type
-            //bytes.Add(0);
-
-            //File.WriteAllBytes(@"C:\Temp\teste.cod", bytes.ToArray());
-
-            using (FileStream fileStream = File.Create(@"C:\Temp\teste.txt"))
+            using (FileStream fileStream = File.Create(path))
             {
                 fileStream.WriteByte(1);
                 fileStream.WriteByte(0);
-
+                
                 foreach (var c in content)
                 {
                     int pow = (int)(Math.Log(c) / Math.Log(2));
@@ -40,8 +37,8 @@ namespace FileCompresser
                     var bytes = Encoding.ASCII.GetBytes(codeword.ToString());
 
                     foreach (var b in bytes)
-                        fileStream.WriteByte(b);                    
-                }
+                        fileStream.WriteByte(b);
+                }                
 
                 fileStream.Close();
             }
@@ -49,18 +46,56 @@ namespace FileCompresser
 
         public void Decode(string content)
         {
-            var texto = new StringBuilder();
+            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
 
-            var bytes = Encoding.ASCII.GetBytes(content);
-
-            foreach (var b in bytes)
+            using (FileStream fileStream = File.Create(path))
             {
-                var bits = new BitArray(b.SelfArray());
+                var fileContent = new StringBuilder();
+                var bytes = Encoding.ASCII.GetBytes(content);
+                bytes = bytes.Skip(2).ToArray();
+
+                int n = 0, i = 0;
+                bool countUnary = true;
+                var leftOverBinary = new StringBuilder();
+
+                foreach (var b in bytes)
+                {
+                    var byteChar = Convert.ToChar(b);
+                    if (countUnary)
+                    {
+                        if (byteChar.Equals('0'))
+                            n++;
+                        else if (byteChar.Equals('1'))
+                            countUnary = false;
+
+                        continue;
+                    }
+
+                    if (i <= n)
+                    {
+                        leftOverBinary.Append(byteChar.ToString());
+                        i++;
+
+                        if (i == n)
+                        {
+                            var leftOver = Convert.ToInt32(leftOverBinary.ToString(), 2);
+                            var asc = (int)Math.Pow(2, n) + leftOver;
+                            fileContent.Append(((char)asc).ToString());
+
+                            i = 0;
+                            n = 0;
+                            countUnary = true;
+                            leftOverBinary = new StringBuilder();
+                        }
+                    }
+                }
+
+                var contentBytes = Encoding.ASCII.GetBytes(fileContent.ToString());
+                var readOnlySpan = new ReadOnlySpan<byte>(contentBytes);
+
+                fileStream.Write(readOnlySpan);
             }
-
-            texto.Append('c');
-
-            File.WriteAllText(@"C:\Temp\teste.dec", texto.ToString());
         }
     }
 }
