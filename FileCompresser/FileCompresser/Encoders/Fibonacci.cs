@@ -6,7 +6,7 @@ namespace FileCompresser
 {
     public class Fibonacci : IEncoder
     {
-        public string Encode(string content)
+        public void Encode(string content)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(content);
             int[] bytesAsInts = Array.ConvertAll(bytes, c => Convert.ToInt32(c));
@@ -79,11 +79,11 @@ namespace FileCompresser
                 result += codewords[i];
             }
 
-            return result;
+            //return result;
         }
 
         // NOT WORKING
-        public string Decode(string content)
+        public void Decode(string content)
         {
             List<string> codewords = new List<string>();
             List<int> intCodes = new List<int>();
@@ -133,7 +133,7 @@ namespace FileCompresser
                 result += charCodes[i];
             }
 
-            return result;
+            //return result;
         }
     }
 }

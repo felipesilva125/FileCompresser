@@ -6,8 +6,8 @@ namespace FileCompresser
     {
         public static void Main()
         {            
-            try
-            {
+            //try
+            //{
                 var fileName = RequestData.RequestFileName();
                 var codificationType = RequestData.RequestCodificationType();
 
@@ -15,12 +15,12 @@ namespace FileCompresser
 
                 compressFile(fileName, encoder);
                 decompressFile(fileName, encoder);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Error: {e.Message}");
-                Environment.Exit(0);
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine($"Error: {e.Message}");
+            //    Environment.Exit(0);
+            //}
 
             Console.WriteLine("Compressing and decompressing made successfully!");
         }                
@@ -28,19 +28,17 @@ namespace FileCompresser
         private static void compressFile(string fileName, IEncoder encoder)
         {
             var fileContent = FileController.ReadFileContent(fileName, FileController.READING_EXTENSION);
+            encoder.Encode(fileContent);
 
-            fileContent = encoder.Encode(fileContent);
-
-            FileController.WriteFileContent(fileName, FileController.COMPRESSING_EXTENSION, fileContent);
+            //FileController.WriteFileContent(fileName, FileController.COMPRESSING_EXTENSION, fileContent);
         }
 
         private static void decompressFile(string fileName, IEncoder encoder)
         {
-            var fileContent = FileController.ReadFileContent(fileName, FileController.COMPRESSING_EXTENSION);
-            
-            fileContent = encoder.Decode(fileContent);
+            var fileContent = FileController.ReadFileContent(fileName, FileController.COMPRESSING_EXTENSION);            
+            encoder.Decode(fileContent);
 
-            FileController.WriteFileContent(fileName, FileController.DECOMPRESSING_EXTENSION, fileContent);
+            //FileController.WriteFileContent(fileName, FileController.DECOMPRESSING_EXTENSION, fileContent);
         }
     }
 }

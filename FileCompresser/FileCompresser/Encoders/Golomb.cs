@@ -1,54 +1,120 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FileCompresser
 {
     public class Golomb : IEncoder
     {
-        public string Encode(string content)
+        public void Encode(string content)
         {
-            var codeWords = new bool[Encoding.ASCII.GetByteCount(content) * 8];
-            long idx = 0;
+            int K = 64;
 
-            int K = 64; 
+            //int idx = 2;
+
+            var bytes = new List<byte>();//[(bits.Length / 8) + 2];
+
+            bytes.Add(0); //indicator of the encoding type
+            bytes.Add((byte)K); //value of divisor
+
+            var bits = new StringBuilder();
 
             foreach (var c in content)
             {
-                int prefixBits = c / K;
+                //var codeWord = new List<bool>();
+
+                var qtyBits = (int)Math.Log(K, 2);                
+
+                int prefixBits = c >> qtyBits; //Math.DivRem(c, K, out int leftOver);
+                int leftOver = c & (K - 1);
+
+                var builder = new StringBuilder();
 
                 //prefix
                 for (int i = 0; i < prefixBits; i++)
-                    codeWords[idx++] = false;
+                    builder.Append("0"); // codeWord.Add(false);
 
                 //stop bit
-                codeWords[idx++] = true;
+                builder.Append("1");//codeWord.Add(true);                
 
-                //sufix
-                uint r = 0x1;
-                for (int i = 0; i < (int)Math.Log(K, 2); i++)
-                {
-                    codeWords[idx++] = (r & c) > 0; 
-                    r <<= 1;
-                }
-            }
+                var binary = Convert.ToString(leftOver, 2).PadLeft(qtyBits, '0');
+                builder.Append(binary);
 
-            var bits = new BitArray(codeWords);
-            var bytes = new byte[(long)Math.Ceiling(bits.Length / 8d) + 2];
+                //bits.Append(builder.ToString());
 
-            bytes[0] = 0; //indicator of the encoding type
-            bytes[1] = (byte)K; //value of divisor
+                bytes.Add(Convert.ToByte(builder.ToString(), 2));
 
-            bits.CopyTo(bytes, 2);
+                //foreach (var binValue in binary)
+                //{
+                //    if (binValue.Equals('0'))
+                //        codeWord.Add(false);
+                //    else
+                //        codeWord.Add(true);
+                //}
 
-            var result = Encoding.ASCII.GetString(bytes).Substring(0, (int)idx / 8);            
+                //var bits = new BitArray(codeWord.ToArray());
+                //bytes[idx++] = Encoding.ASCII.GetBytes();
+            }            
 
-            return result;
+            //var stringBits = bits.ToString();
+
+            //var bytesAsStrings = stringBits.Select((c, i) => new { Char = c, Index = i })
+            //                               .GroupBy(x => x.Index / 8)
+            //                               .Select(g => new string(g.Select(x => x.Char).ToArray()));
+
+            //bytes.AddRange(bytesAsStrings.Select(s => Convert.ToByte(s, 2)));
+            
+            //var bytes = new byte[(long)Math.Ceiling(bits.Length / 8d) + 2];           
+
+            //bits.CopyTo(bytes, 2);            
+
+            var result = Encoding.ASCII.GetString(bytes.ToArray());            
         }
 
-        public string Decode(string content)
+        public void Decode(string content)
         {
-            throw new NotImplementedException();
+            var bytes = Encoding.ASCII.GetBytes(content);
+
+            var K = bytes[1]; //get K from encoding
+
+            var bytesWithoutK = new byte[bytes.Length - 2];
+            Array.Copy(bytes, 2, bytesWithoutK, 0, bytes.Length - 2);
+
+            var builder = new StringBuilder();
+
+            foreach (var codeWord in bytesWithoutK)
+            {
+                var bits = new BitArray(codeWord.SelfArray());
+
+                var aaaaa = Convert.ToString(codeWord, 2);
+
+                var x = (int)Math.Log(K, 2);
+
+                int prefix = 0;
+                for (int i = 0; i < x - 1; i++)
+                {
+                    if (!bits[i])
+                        prefix++;
+                }
+
+                var binarySufix = new StringBuilder();
+                for (int i = x; i < bits.Length; i++)
+                {
+                    if (bits[i])
+                        binarySufix.Append("1");
+                    else
+                        binarySufix.Append("0");
+                }
+
+                int sufix = Convert.ToInt32(binarySufix.ToString(), 2);
+                int result = prefix + sufix;
+
+                builder.Append(Encoding.ASCII.GetString(((byte)result).SelfArray()));
+            }
+
+            var teste = builder.ToString();            
         }
     }
 }

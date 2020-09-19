@@ -7,7 +7,7 @@ namespace FileCompresser
     public class Delta : IEncoder
     {
         // NOT WORKING RIGTH
-        public string Encode(string content)
+        public void Encode(string content)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(content);
 
@@ -34,10 +34,10 @@ namespace FileCompresser
             // decoder will have problems to decode, leading to execution errors
             string result = Encoding.ASCII.GetString(shiftRight);
 
-            return result;
+            //return result;
         }
 
-        public string Decode(string content)
+        public void Decode(string content)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(content);
             byte[] decoded = new byte[bytes.Length - 2];   // heading is not needed
@@ -52,7 +52,7 @@ namespace FileCompresser
             }
 
             string result = Encoding.ASCII.GetString(decoded);
-            return result;
+            //return result;
         }
     }
 }

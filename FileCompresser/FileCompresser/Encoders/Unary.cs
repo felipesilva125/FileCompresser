@@ -6,12 +6,12 @@ namespace FileCompresser
 {
     public class Unary : IEncoder
     {
-        public string Encode(string content)
+        public void Encode(string content)
         {
             throw new NotImplementedException();
         }
 
-        public string Decode(string content)
+        public void Decode(string content)
         {
             throw new NotImplementedException();
         }
