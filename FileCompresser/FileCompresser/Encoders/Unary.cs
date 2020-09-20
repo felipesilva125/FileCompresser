@@ -11,7 +11,7 @@ namespace FileCompresser
             throw new NotImplementedException();
         }
 
-        public void Decode(string content)
+        public void Decode(byte[] bytes)
         {
             throw new NotImplementedException();
         }

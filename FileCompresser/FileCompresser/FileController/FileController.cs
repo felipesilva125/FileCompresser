@@ -10,17 +10,23 @@ namespace FileCompresser
         public const string COMPRESSING_EXTENSION = "cod";
         public const string DECOMPRESSING_EXTENSION = "dec";
 
-        public static string ReadFileContent(string fileName, string fileExtension)
+        public static byte[] ReadFileContent(string fileName, string fileExtension)
+        {            
+            var path = getPath(fileName, fileExtension);            
+            return File.ReadAllBytes(path);
+        }
+
+        public static string ReadFileContentString(string fileName, string fileExtension)
         {
-            ValidateFile(fileName, fileExtension);
-            var path = getFullPath(fileName, fileExtension);            
+            string path = getPath(fileName, fileExtension);
             return File.ReadAllText(path);
         }
 
-        public static void WriteFileContent(string fileName, string fileExtension, string fileContent)
+        private static string getPath(string fileName, string fileExtension)
         {
-            var path = getFullPath(fileName, fileExtension);            
-            File.WriteAllText(path, fileContent);
+            ValidateFile(fileName, fileExtension);
+            var path = getFullPath(fileName, fileExtension);
+            return path;
         }
 
         private static string getFullPath(string fileName, string extension)

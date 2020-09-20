@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 namespace FileCompresser
 {
@@ -37,9 +35,8 @@ namespace FileCompresser
             //return result;
         }
 
-        public void Decode(string content)
-        {
-            byte[] bytes = Encoding.ASCII.GetBytes(content);
+        public void Decode(byte[] bytes)
+        {            
             byte[] decoded = new byte[bytes.Length - 2];   // heading is not needed
 
             byte last = 0;

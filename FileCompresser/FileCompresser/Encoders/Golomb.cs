@@ -25,7 +25,7 @@ namespace FileCompresser
             {
                 //var codeWord = new List<bool>();
 
-                var qtyBits = (int)Math.Log(K, 2);                
+                var qtyBits = (int)Math.Log(K, 2);
 
                 int prefixBits = c >> qtyBits; //Math.DivRem(c, K, out int leftOver);
                 int leftOver = c & (K - 1);
@@ -56,7 +56,7 @@ namespace FileCompresser
 
                 //var bits = new BitArray(codeWord.ToArray());
                 //bytes[idx++] = Encoding.ASCII.GetBytes();
-            }            
+            }
 
             //var stringBits = bits.ToString();
 
@@ -65,18 +65,16 @@ namespace FileCompresser
             //                               .Select(g => new string(g.Select(x => x.Char).ToArray()));
 
             //bytes.AddRange(bytesAsStrings.Select(s => Convert.ToByte(s, 2)));
-            
+
             //var bytes = new byte[(long)Math.Ceiling(bits.Length / 8d) + 2];           
 
             //bits.CopyTo(bytes, 2);            
 
-            var result = Encoding.ASCII.GetString(bytes.ToArray());            
+            var result = Encoding.ASCII.GetString(bytes.ToArray());
         }
 
-        public void Decode(string content)
-        {
-            var bytes = Encoding.ASCII.GetBytes(content);
-
+        public void Decode(byte[] bytes)
+        {            
             var K = bytes[1]; //get K from encoding
 
             var bytesWithoutK = new byte[bytes.Length - 2];
@@ -114,7 +112,7 @@ namespace FileCompresser
                 builder.Append(Encoding.ASCII.GetString(((byte)result).SelfArray()));
             }
 
-            var teste = builder.ToString();            
+            var teste = builder.ToString();
         }
     }
 }

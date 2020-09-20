@@ -83,12 +83,14 @@ namespace FileCompresser
         }
 
         // NOT WORKING
-        public void Decode(string content)
+        public void Decode(byte[] bytes)
         {
             List<string> codewords = new List<string>();
             List<int> intCodes = new List<int>();
             List<char> charCodes = new List<char>();
             string codewordAux = "";
+
+            var content = Encoding.ASCII.GetString(bytes);
 
             int[] fib = new int[20];
             fib[0] = 0;

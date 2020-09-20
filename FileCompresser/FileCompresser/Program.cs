@@ -27,7 +27,7 @@ namespace FileCompresser
 
         private static void compressFile(string fileName, IEncoder encoder)
         {
-            var fileContent = FileController.ReadFileContent(fileName, FileController.READING_EXTENSION);
+            var fileContent = FileController.ReadFileContentString(fileName, FileController.READING_EXTENSION);
             encoder.Encode(fileContent);
 
             //FileController.WriteFileContent(fileName, FileController.COMPRESSING_EXTENSION, fileContent);
