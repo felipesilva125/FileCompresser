@@ -8,6 +8,9 @@ namespace FileCompresser
     {
         public void Encode(string content)
         {
+            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
+            
             byte[] bytes = Encoding.ASCII.GetBytes(content);
             int[] bytesAsInts = Array.ConvertAll(bytes, c => Convert.ToInt32(c));
 
@@ -15,7 +18,7 @@ namespace FileCompresser
             fib[0] = 0;
             fib[1] = 1;
 
-            for (int i = 2; i < fib.Length; i++)   // fib series array
+            for (int i = 2; i < fib.Length; i++)
                 fib[i] = fib[i - 1] + fib[i - 2];
 
             int count = 0;
@@ -23,7 +26,6 @@ namespace FileCompresser
             List<int> fibLocations = new List<int>();
             List<string> codewords = new List<string>();
 
-            // find the locations of the number sum in fib array
             while (count < bytesAsInts.Length)
             {
                 number = bytesAsInts[count];
@@ -44,8 +46,9 @@ namespace FileCompresser
             int[] codesAux = new int[20];
             string codewordAux = "";
             int positionAux = fibLocations[0];
+            int totalLength = 0;
 
-            // generate codewords
+            // generate the codewords
             for (int i = 0; i < fibLocations.Count; i++)
             {
                 if (i > 0)
@@ -68,29 +71,66 @@ namespace FileCompresser
                     }
                     Array.Clear(codesAux, 0, codesAux.Length);
                     codewords.Add(codewordAux);
+                    totalLength += codewordAux.Length;
                     codewordAux = "";
                 }
             }
 
-            // returning a normal string with the codewords - .cod will be larger
-            string result = "";
+            BitArray bits = new BitArray(totalLength);
+            BitArray bits8 = new BitArray(8);
+
+            // fill bits array with codewords
+            count = 0;
             for (int i = 0; i < codewords.Count; i++)
             {
-                result += codewords[i];
+                var res = new BitArray(codewords[i].Select(c => c == '1').ToArray());
+                for (int j = 0; j < res.Count; j++)
+                {
+                    bits[count++] = res[j];
+                }
             }
 
-            //return result;
+            int tam = bits.Count / 8;
+            int resto = bits.Count % 8;
+            byte[] bitToByte = new byte[tam];
+
+            count = 0;
+            int bitCount = 0;
+            for (int i = 0; i < bits.Count; i++) {
+                if (i % 8 == 0 && i != 0) {
+                    bits8.CopyTo(bitToByte, bitCount++);
+                    count = 0;
+                    bits8[count++] = bits[i];
+                }
+                else {
+                    bits8[count++] = bits[i];
+                }
+            }
+            count = 0;
+            tam = bits.Count - 1;
+            for (int i = 0; i < 8; i++) {
+                if (resto > 0) {
+                    bits8[count++] = bits[tam--];
+                    resto--;
+                }
+                else {
+                    bits8[count++] = false;
+                }
+            }
+            bits8.CopyTo(bitToByte, bitCount);
+
+            File.WriteAllBytes(path, bitToByte);
         }
 
-        // NOT WORKING
         public void Decode(byte[] bytes)
         {
+            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
+            
+            BitArray bits = new BitArray(bytes);
             List<string> codewords = new List<string>();
             List<int> intCodes = new List<int>();
             List<char> charCodes = new List<char>();
-            string codewordAux = "";
-
-            var content = Encoding.ASCII.GetString(bytes);
 
             int[] fib = new int[20];
             fib[0] = 0;
@@ -98,44 +138,61 @@ namespace FileCompresser
             for (int i = 2; i < fib.Length; i++)
                 fib[i] = fib[i - 1] + fib[i - 2];
 
-            // error here to split the codewords to the array
-            for (int i = 0; i < content.Length; i++)
-            {
-                if (content[i] == 1 && content[i + 1] == 1)
-                {
-                    codewordAux += content[i];     // dont need the stop bit (content[i + 1])
-                    codewords.Add(codewordAux);
-                    codewordAux = "";
-                    i++;
+            string codesAux = "";
+            bool a;
+            bool b;
+            for (int i = 0; i < bits.Count; i++) {
+                if (i < bits.Count - 1) {
+                    a = bits[i];
+                    b = bits[i + 1];
+                    if (a == true && b == true)
+                    {
+                        codesAux += "1";              // codeword with no stop bit
+                        codewords.Add(codesAux);
+                        codesAux = "";
+                        ++i;
+                    }
+                    else
+                    {
+                        if (bits[i] == false)
+                            codesAux += "0";
+                        else
+                            codesAux += "1";
+                    }
                 }
                 else
                 {
-                    codewordAux += content[i];
+                    if (bits[i] == false)
+                            codesAux += "0";
+                        else
+                            codesAux += "1";
                 }
             }
 
             int sum = 0;
-            int numberAux = 0;
-            // sum the fib number to get the decoded number
-            for (int i = 0; i < codewords.Count; i++) {
-                for (int j = 0; j < codewords[i].Length; j++) {
-                    numberAux = Convert.ToInt32(codewords[i][j]);
-                    if (numberAux == 1) {
-                        sum += fib[j+2];
+            char numberAux;
+            for (int i = 0; i < codewords.Count; i++)
+            {
+                for (int j = 0; j < codewords[i].Length; j++)
+                {
+                    numberAux = codewords[i][j];
+                    if (numberAux == '1')
+                    {
+                        sum += fib[j + 2];
                     }
                 }
                 intCodes.Add(sum);
                 sum = 0;
             }
 
-            // return numbers as ASCII chars
             string result = "";
-            for (int i = 0; i < intCodes.Count; i++) {
+            for (int i = 0; i < intCodes.Count; i++)
+            {
                 charCodes.Add(Convert.ToChar(intCodes[i]));
                 result += charCodes[i];
             }
-
-            //return result;
+            
+            File.WriteAllBytes(path, bitToByte);
         }
     }
 }
