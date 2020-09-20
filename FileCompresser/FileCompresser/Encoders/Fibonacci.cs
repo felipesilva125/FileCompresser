@@ -192,7 +192,7 @@ namespace FileCompresser
                 result += charCodes[i];
             }
             
-            File.WriteAllBytes(path, bitToByte);
+            File.WriteAllText(path, result);
         }
     }
 }
