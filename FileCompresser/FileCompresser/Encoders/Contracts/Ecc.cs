@@ -92,7 +92,7 @@ namespace FileCompresser
         }
 
         // take a byte array(without header) and apply hamming(7, 4)
-        public BitArray hamming(byte[] bytes)
+        public BitArray Hamming(byte[] bytes)
         {
             BitArray bits = new BitArray(bytes);           // bytes to bitArray
 
@@ -106,7 +106,7 @@ namespace FileCompresser
             {                                               // every 4 bits store them in s bitArray and hamming bitArray and;
                 if (count4 == 4)                            // apply hamming.
                 {
-                    BitArray parityBits = hammingTable(s, true);
+                    BitArray parityBits = HammingTable(s, true);
                     hamming[index++] = parityBits[0];
                     hamming[index++] = parityBits[1];
                     hamming[index++] = parityBits[2];
@@ -128,7 +128,8 @@ namespace FileCompresser
             return hamming;                             // return bitArray with hamming coding
         }
 
-        public BitArray hammingDec(BitArray hamming)
+        // take BitArray and return decoded BitArray
+        public BitArray HammingDec(BitArray hamming)
         {
             int hamNumber = hamming.Count / 7;          // number of hamming codes
             int size = hamNumber / 2;                   // number of bytes
@@ -143,7 +144,7 @@ namespace FileCompresser
             {                                           // take every 7 bits and check their parity bits (last 3);
                 if (i % 7 == 0 && i != 0)               // check for errors and take the first 4 bits from that 7.
                 {
-                    BitArray checkParity = hammingTable(aux, false);
+                    BitArray checkParity = HammingTable(aux, false);
                     hammingDec[indexDec++] = checkParity[0];
                     hammingDec[indexDec++] = checkParity[1];
                     hammingDec[indexDec++] = checkParity[2];
@@ -164,8 +165,9 @@ namespace FileCompresser
             return hammingDec;
         }
         
-        // check parity bits
-        public BitArray hammingTable(BitArray s, bool coding)
+        // check parity bits and return: BitArray with 3 bits - if is encoding
+        //                               BitArray with 4 bits - if is decoding
+        public BitArray HammingTable(BitArray s, bool coding)
         {
             int data1 = Convert.ToInt32(s[0]);
             int data2 = Convert.ToInt32(s[1]);
