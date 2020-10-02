@@ -93,9 +93,7 @@ namespace FileCompresser
 
         public BitArray hamming(byte[] bytes)
         {
-            byte[] bytesa = bytes;
-            bool[] a = new bool[] { true, false, true, true, true, false, false, true, false, false, true, false };
-            BitArray bits = new BitArray(bytesa);           // bytes to bitArray
+            BitArray bits = new BitArray(bytes);           // bytes to bitArray
 
             int tam = (int)Math.Ceiling(bits.Count / 4d);   // number of hamming we need to apply
             BitArray hamming = new BitArray(tam * 7);       // multiple tam by 7 and we have the total number of bits
