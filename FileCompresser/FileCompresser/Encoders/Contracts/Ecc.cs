@@ -91,6 +91,7 @@ namespace FileCompresser
             return crcByte;
         }
 
+        // take a byte array(without header) and apply hamming(7, 4)
         public BitArray hamming(byte[] bytes)
         {
             BitArray bits = new BitArray(bytes);           // bytes to bitArray
@@ -162,6 +163,8 @@ namespace FileCompresser
 
             return hammingDec;
         }
+        
+        // check parity bits
         public BitArray hammingTable(BitArray s, bool coding)
         {
             int data1 = Convert.ToInt32(s[0]);
