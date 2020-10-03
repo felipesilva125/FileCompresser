@@ -8,7 +8,7 @@ namespace FileCompresser
     {
         public void Encode(string content, string fileName)
         {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
             
             byte[] bytes = Encoding.ASCII.GetBytes(content);
@@ -134,7 +134,7 @@ namespace FileCompresser
         
         public void Decode(byte[] bytes, string fileName)
         {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
             
             byte[] bytesAux = new byte[bytes.Length - 2];   // remove heading
@@ -199,14 +199,12 @@ namespace FileCompresser
                 sum = 0;
             }
 
-            string result = "";
-            for (int i = 0; i < intCodes.Count; i++)
-            {
-                charCodes.Add(Convert.ToChar(intCodes[i]));
-                result += charCodes[i];
+            byte[] ret = new byte[intCodes.Count];
+            for (int i = 0; i < intCodes.Count; i++) {
+                ret[i] = Convert.ToByte(intCodes[i]);
             }
             
-            File.WriteAllText(path, result);
+            File.WriteAllBytes(path, ret);
         }
     }
 }
