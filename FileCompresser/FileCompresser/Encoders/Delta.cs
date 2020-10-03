@@ -5,7 +5,7 @@ namespace FileCompresser
     public class Delta : IEncoder
     {
         // NOT WORKING RIGTH
-        public void Encode(string content)
+        public void Encode(string content, string fileName)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(content);
 
@@ -35,7 +35,7 @@ namespace FileCompresser
             //return result;
         }
 
-        public void Decode(byte[] bytes)
+        public void Decode(byte[] bytes, string fileName)
         {            
             byte[] decoded = new byte[bytes.Length - 2];   // heading is not needed
 

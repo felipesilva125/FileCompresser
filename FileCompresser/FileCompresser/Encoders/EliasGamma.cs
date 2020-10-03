@@ -9,9 +9,9 @@ namespace FileCompresser
 {
     public class EliasGamma : IEncoder
     {
-        public void Encode(string content)
+        public void Encode(string content, string fileName)
         {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
 
             var bools = new List<bool>();
@@ -64,43 +64,9 @@ namespace FileCompresser
             File.WriteAllBytes(path, byteList.ToArray());
         }
 
-        private static byte ConvertBoolArrayToByte(bool[] source)
+        public void Decode(byte[] bytes, string fileName)
         {
-            byte result = 0;
-            // This assumes the array never contains more than 8 elements!
-            int index = 8 - source.Length;
-
-            // Loop through the array
-            foreach (bool b in source)
-            {
-                // if the element is 'true' set the bit at that position
-                if (b)
-                    result |= (byte)(1 << (7 - index));
-
-                index++;
-            }
-
-            return result;
-        }
-
-        private static bool[] ConvertByteToBoolArray(byte b)
-        {
-            // prepare the return result
-            bool[] result = new bool[8];
-
-            // check each bit in the byte. if 1 set to true, if 0 set to false
-            for (int i = 0; i < 8; i++)
-                result[i] = (b & (1 << i)) == 0 ? false : true;
-
-            // reverse the array
-            Array.Reverse(result);
-
-            return result;
-        }
-
-        public void Decode(byte[] bytes)
-        {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
 
             using (FileStream fileStream = File.Create(path))

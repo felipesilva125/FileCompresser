@@ -6,7 +6,7 @@ namespace FileCompresser
 {
     public class Fibonacci : IEncoder
     {
-        public void Encode(string content)
+        public void Encode(string content, string fileName)
         {
             string path = Path.Combine(FileController.FILE_PATH, "teste");
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
@@ -131,8 +131,8 @@ namespace FileCompresser
             byte[] header = new byte[3] { shiftRight[0], shiftRight[1], 0};
             File.WriteAllBytes(path, shiftRight);       // generate .cod
         }
-
-        public void Decode(byte[] bytes)
+        
+        public void Decode(byte[] bytes, string fileName)
         {
             string path = Path.Combine(FileController.FILE_PATH, "teste");
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);

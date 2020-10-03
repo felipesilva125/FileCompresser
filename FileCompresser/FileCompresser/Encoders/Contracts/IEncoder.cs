@@ -6,7 +6,7 @@ namespace FileCompresser
 {
     public interface IEncoder
     {
-        void Encode(string content);
-        void Decode(byte[] content);
+        void Encode(string content, string fileName);
+        void Decode(byte[] content, string fileName);
     }
 }

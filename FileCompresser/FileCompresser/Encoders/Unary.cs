@@ -9,7 +9,7 @@ namespace FileCompresser
 {
     public class Unary : IEncoder
     {
-        public void Encode(string content)
+        public void Encode(string content, string fileName)
         {
             string path = Path.Combine(FileController.FILE_PATH, "teste");
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
@@ -40,7 +40,7 @@ namespace FileCompresser
             File.WriteAllBytes(path, byteList.ToArray());
         }
 
-        public void Decode(byte[] bytes)
+        public void Decode(byte[] bytes, string fileName)
         {
             string path = Path.Combine(FileController.FILE_PATH, "teste");
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);

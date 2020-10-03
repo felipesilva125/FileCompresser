@@ -8,7 +8,7 @@ namespace FileCompresser
 {
     public class Golomb : IEncoder
     {
-        public void Encode(string content)
+        public void Encode(string content, string fileName)
         {
             int K = 64;
 
@@ -73,7 +73,7 @@ namespace FileCompresser
             var result = Encoding.ASCII.GetString(bytes.ToArray());
         }
 
-        public void Decode(byte[] bytes)
+        public void Decode(byte[] bytes, string fileName)
         {            
             var K = bytes[1]; //get K from encoding
 
