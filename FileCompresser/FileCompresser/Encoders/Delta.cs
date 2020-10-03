@@ -6,7 +6,7 @@ namespace FileCompresser
     {
         public void Encode(string content, string fileName)
         {
-            string path = fileName;
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
 
             byte[] bytes = Encoding.UTF8.GetBytes(content);
@@ -35,7 +35,7 @@ namespace FileCompresser
 
         public void Decode(byte[] bytes, string fileName)
         {            
-            string path = fileName;
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
 
             byte[] arqBytes = bytes;
