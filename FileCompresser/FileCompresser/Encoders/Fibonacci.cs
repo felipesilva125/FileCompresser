@@ -90,7 +90,7 @@ namespace FileCompresser
                 }
             }
 
-            int tam = bits.Count / 8;
+            int tam = (int)Math.Ceiling(bits.Count / 8d);
             int resto = bits.Count % 8;
             byte[] bitToByte = new byte[tam];
 
@@ -118,8 +118,18 @@ namespace FileCompresser
                 }
             }
             bits8.CopyTo(bitToByte, bitCount);
+            
+            byte[] shiftRight = new byte[bitToByte.Length + 2];
+            for (int i = 0; i < bitToByte.Length; i++)
+            {
+                shiftRight[(i + 2) % shiftRight.Length] = bitToByte[i];
+            }
 
-            File.WriteAllBytes(path, bitToByte);
+            shiftRight[0] = 2; // Fibonacci number
+            shiftRight[1] = 0; // Only for Golomb K
+
+            byte[] header = new byte[3] { shiftRight[0], shiftRight[1], 0};
+            File.WriteAllBytes(path, shiftRight);       // generate .cod
         }
 
         public void Decode(byte[] bytes)
