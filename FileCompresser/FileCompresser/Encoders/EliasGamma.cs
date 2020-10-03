@@ -24,38 +24,21 @@ namespace FileCompresser
                 var codeword = new StringBuilder();
 
                 for (int i = 0; i < pow; i++)
-                    bools.Add(false);//codeword.Append("0");                
+                    bools.Add(false);
 
-                bools.Add(true);//codeword.Append("1");
+                bools.Add(true);
 
-                var leftOver = c - biggestPow;
-                //codeword.Append(Convert.ToString(leftOver, 2).PadLeft(pow, '0'));
+                var leftOver = c - biggestPow;                
 
                 var binaryString = Convert.ToString(leftOver, 2).PadLeft(pow, '0');
                 foreach (var bit in binaryString)
-                    bools.Add(bit == '1');
-
-                //var bytes = Encoding.ASCII.GetBytes(codeword.ToString());
-
-                //foreach (var b in bytes)
-                //    fileStream.WriteByte(b);
+                    bools.Add(bit == '1');                
             }
 
             var bytes = new byte[(int)Math.Ceiling(bools.Count / 8d)];
 
             var bits = new BitArray(bools.ToArray());
-            bits.CopyTo(bytes, 0);
-
-            //var bytes = new List<byte>();
-
-            //int skip = 0;
-            //int qtyList = bools.Count() <= 8 ? 1 : (int)Math.Ceiling(bools.Count / 8d);
-
-            //for (int i = 1; i <= qtyList; i++)
-            //{
-            //    bytes.Add(ConvertBoolArrayToByte(bools.Skip(skip).Take(8).ToArray()));
-            //    skip += 8;
-            //}
+            bits.CopyTo(bytes, 0);            
 
             var byteList = bytes.ToList();
             byteList.Insert(0, 1);
@@ -83,8 +66,7 @@ namespace FileCompresser
                 var leftOverBinary = new StringBuilder();
 
                 foreach (var b in bools)
-                {
-                    //var byteChar = Convert.ToChar(b);
+                {                    
                     if (countUnary)
                     {
                         if (!b)

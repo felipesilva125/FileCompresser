@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -10,23 +11,16 @@ namespace FileCompresser
     {
         public void Encode(string content, string fileName)
         {
-            int K = 64;
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
+            path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
 
-            //int idx = 2;
+            int K = RequestData.RequestDivisor();
 
-            var bytes = new List<byte>();//[(bits.Length / 8) + 2];
-
-            bytes.Add(0); //indicator of the encoding type
-            bytes.Add((byte)K); //value of divisor
-
-            var bits = new StringBuilder();
+            var bools = new List<bool>();
+            var qtyBits = (int)Math.Log(K, 2);
 
             foreach (var c in content)
-            {
-                //var codeWord = new List<bool>();
-
-                var qtyBits = (int)Math.Log(K, 2);
-
+            {                                
                 int prefixBits = c >> qtyBits; //Math.DivRem(c, K, out int leftOver);
                 int leftOver = c & (K - 1);
 
@@ -34,43 +28,26 @@ namespace FileCompresser
 
                 //prefix
                 for (int i = 0; i < prefixBits; i++)
-                    builder.Append("0"); // codeWord.Add(false);
+                    bools.Add(false);
 
                 //stop bit
-                builder.Append("1");//codeWord.Add(true);                
+                bools.Add(true);
 
                 var binary = Convert.ToString(leftOver, 2).PadLeft(qtyBits, '0');
-                builder.Append(binary);
-
-                //bits.Append(builder.ToString());
-
-                bytes.Add(Convert.ToByte(builder.ToString(), 2));
-
-                //foreach (var binValue in binary)
-                //{
-                //    if (binValue.Equals('0'))
-                //        codeWord.Add(false);
-                //    else
-                //        codeWord.Add(true);
-                //}
-
-                //var bits = new BitArray(codeWord.ToArray());
-                //bytes[idx++] = Encoding.ASCII.GetBytes();
+                foreach (var bit in binary)
+                    bools.Add(bit == '1');
             }
 
-            //var stringBits = bits.ToString();
+            var bytes = new byte[(int)Math.Ceiling(bools.Count / 8d)];
 
-            //var bytesAsStrings = stringBits.Select((c, i) => new { Char = c, Index = i })
-            //                               .GroupBy(x => x.Index / 8)
-            //                               .Select(g => new string(g.Select(x => x.Char).ToArray()));
+            var bits = new BitArray(bools.ToArray());
+            bits.CopyTo(bytes, 0);
 
-            //bytes.AddRange(bytesAsStrings.Select(s => Convert.ToByte(s, 2)));
+            var byteList = bytes.ToList();
+            byteList.Insert(0, 0); //indicator of the encoding type
+            byteList.Insert(1, (byte)K); //value of divisor
 
-            //var bytes = new byte[(long)Math.Ceiling(bits.Length / 8d) + 2];           
-
-            //bits.CopyTo(bytes, 2);            
-
-            var result = Encoding.ASCII.GetString(bytes.ToArray());
+            File.WriteAllBytes(path, byteList.ToArray());            
         }
 
         public void Decode(byte[] bytes, string fileName)
