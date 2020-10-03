@@ -52,7 +52,7 @@ namespace FileCompresser
             string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
 
-            using (FileStream fileStream = File.Create(path))
+            using (var fileStream = File.Create(path))
             {
                 var fileContent = new StringBuilder();                
                 bytes = bytes.Skip(2).ToArray();

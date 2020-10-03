@@ -76,7 +76,7 @@ namespace FileCompresser
                 Console.WriteLine("Enter the divisor:");
                 var divisor = Console.ReadLine();
 
-                if (!byte.TryParse(divisor, out var result))
+                if (!byte.TryParse(divisor, out var result) || result == 0 || !result.isPowerOfTwo())
                 {
                     Console.WriteLine("Invalid value. Please try again.");
                     continue;
@@ -85,6 +85,11 @@ namespace FileCompresser
                 return result;
 
             } while (true);            
+        }
+
+        private static bool isPowerOfTwo(this byte input)
+        {
+            return (input & (input - 1)) == 0;
         }
     }
 }
