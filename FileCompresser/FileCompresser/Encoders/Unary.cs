@@ -11,7 +11,7 @@ namespace FileCompresser
     {
         public void Encode(string content, string fileName)
         {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
 
             var bools = new List<bool>();
@@ -42,7 +42,7 @@ namespace FileCompresser
 
         public void Decode(byte[] bytes, string fileName)
         {
-            string path = Path.Combine(FileController.FILE_PATH, "teste");
+            string path = Path.Combine(FileController.FILE_PATH, fileName);
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
 
             bytes = bytes.Skip(2).ToArray();
