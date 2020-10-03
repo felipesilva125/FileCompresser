@@ -4,15 +4,17 @@ namespace FileCompresser
 {
     public class Delta : IEncoder
     {
-        // NOT WORKING RIGTH
         public void Encode(string content, string fileName)
         {
-            byte[] bytes = Encoding.ASCII.GetBytes(content);
+            string path = fileName;
+            path = Path.ChangeExtension(path, FileController.COMPRESSING_EXTENSION);
+
+            byte[] bytes = Encoding.UTF8.GetBytes(content);
 
             byte last = 0;
             byte original;
             int i;
-            for (i = 0; i < bytes.Length; i++) // encode with the deltas
+            for (i = 0; i < bytes.Length; i++)
             {
                 original = bytes[i];
                 bytes[i] -= last;
@@ -28,15 +30,15 @@ namespace FileCompresser
             shiftRight[0] = 4; // Delta number
             shiftRight[1] = 0; // Only for Golomb K
 
-            // problem - some bytes dont have corresponding character
-            // decoder will have problems to decode, leading to execution errors
-            string result = Encoding.ASCII.GetString(shiftRight);
-
-            //return result;
+            File.WriteAllBytes(path, shiftRight);
         }
 
         public void Decode(byte[] bytes, string fileName)
         {            
+            string path = fileName;
+            path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
+
+            byte[] arqBytes = bytes;
             byte[] decoded = new byte[bytes.Length - 2];   // heading is not needed
 
             byte last = 0;
@@ -48,8 +50,7 @@ namespace FileCompresser
                 decoded[count++] = last;
             }
 
-            string result = Encoding.ASCII.GetString(decoded);
-            //return result;
+            File.WriteAllBytes(path, decoded);
         }
     }
 }
