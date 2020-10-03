@@ -137,7 +137,10 @@ namespace FileCompresser
             string path = Path.Combine(FileController.FILE_PATH, "teste");
             path = Path.ChangeExtension(path, FileController.DECOMPRESSING_EXTENSION);
             
-            BitArray bits = new BitArray(bytes);
+            byte[] bytesAux = new byte[bytes.Length - 2];   // remove heading
+            Buffer.BlockCopy(bytes, 2, bytesAux, 0, bytesAux.Length);
+            
+            BitArray bits = new BitArray(bytesAux);
             List<string> codewords = new List<string>();
             List<int> intCodes = new List<int>();
             List<char> charCodes = new List<char>();
@@ -151,7 +154,8 @@ namespace FileCompresser
             string codesAux = "";
             bool a;
             bool b;
-            for (int i = 0; i < bits.Count; i++) {
+            for (int i = 0; i < bits.Count; i++) 
+            {
                 if (i < bits.Count - 1) {
                     a = bits[i];
                     b = bits[i + 1];
