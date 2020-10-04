@@ -15,10 +15,11 @@ namespace FileCompresser
             {
                 try
                 {
-                    Console.WriteLine("Enter the file name:");
+                    Console.WriteLine("Enter the file name with extension:");
                     fileName = Console.ReadLine();
 
-                    FileController.ValidateFile(fileName, FileController.READING_EXTENSION);
+                    var extension = Path.GetExtension(fileName);
+                    FileController.ValidateFile(fileName, extension);
                 }
                 catch (FileNotFoundException e)
                 {

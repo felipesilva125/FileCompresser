@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace FileCompresser
 {
@@ -27,7 +28,8 @@ namespace FileCompresser
 
         private static void compressFile(string fileName, IEncoder encoder)
         {
-            var fileContent = FileController.ReadFileContentString(fileName, FileController.READING_EXTENSION);
+            var extension = Path.GetExtension(fileName);
+            var fileContent = FileController.ReadFileContentString(fileName, extension);
             encoder.Encode(fileContent, fileName);            
         }
 
