@@ -23,4 +23,4 @@
     - Ex.: "C:\Temp\alice29.dec"
     
 #Limitações:
-- Nâo foi possível em algumas codificações chegar a um valor de tamanho do arquivo menor do que o original.
+- Não foi possível em algumas codificações chegar a um valor de tamanho do arquivo menor do que o original.
