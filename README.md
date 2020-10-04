@@ -21,6 +21,13 @@
     - Ex.: "C:\Temp\alice29.cod"
   - Um arquivo decodificado com a extensão ".dec";
     - Ex.: "C:\Temp\alice29.dec"
-    
+
+#Funcionamento do projeto:
+  - Codificação:
+    - O arquivo será lido e codificado de acordo com a codificação que for escolhida, gerando um arquivo.cod;
+  - Decodificação:
+    - O arquivo.cod gerado na codificação será lido e decodificado conforme a codificação escolhida na primeira etapa,
+      gerando um novo arquivo.dec, idêntico ao arquivo original;
+
 #Limitações:
 - Não foi possível em algumas codificações chegar a um valor de tamanho do arquivo menor do que o original.
